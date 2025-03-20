@@ -1,7 +1,10 @@
 import React from 'react';
 import { Stage, Layer, Circle, Rect, Line } from 'react-konva';
+import useStore from '../store';
 
-const Canvas = ({ shapes, tool, onCanvasClick }) => {
+const Canvas = ({ onCanvasClick }) => {
+  const shapes = useStore((state) => state.shapes);
+  const tool = useStore((state) => state.tool);
   return (
     <Stage
       width={window.innerWidth}
