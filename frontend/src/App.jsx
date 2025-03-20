@@ -1,50 +1,30 @@
 import React, { useState } from 'react';
-import { Stage, Layer, Circle } from 'react-konva';
-import { Button, Toolbar, AppBar } from '@mui/material';
+
+// components
+import ToolbarComponent from './components/Toolbar';
+import Canvas from './components/Canvas';
 
 const App = () => {
   const [shapes, setShapes] = useState([]);
+  const [tool, setTool] = useState('circle');
 
-  const handleStageClick = (e) => {
+  const handleCanvasClick = (e) => {
     const { x, y } = e.target.getStage().getPointerPosition();
-    setShapes([...shapes, { type: 'circle', x, y }]);
+    if (tool === 'circle') {
+      setShapes([...shapes, { type: 'circle', x, y }]);
+    } else if (tool === 'rect') {
+      setShapes([...shapes, { type: 'rect', x, y }]);
+    } else if (tool === 'line') {
+      const endX = x + 100;
+      const endY = y;
+      setShapes([...shapes, { type: 'line', x, y, endX, endY }]);
+    }
   };
   return (
     <div className="flex flex-col h-screen">
-      {/* Toolbar */}
-      <AppBar position="static">
-        <Toolbar className="flex justify-between">
-          <Button variant="contained" color="primary">
-            Draw
-          </Button>
-          <Button variant="outlined" color="secondary">
-            Clear
-          </Button>
-        </Toolbar>
-      </AppBar>
-
-      {/* Canvas */}
+      <ToolbarComponent onToolSelect={setTool} />
       <div className="flex-grow">
-        <Stage
-          width={window.innerWidth}
-          height={window.innerHeight}
-          onClick={handleStageClick}
-        >
-          <Layer>
-            {shapes.map(
-              (shape, index) =>
-                shape.type === 'circle' && (
-                  <Circle
-                    key={index}
-                    x={shape.x}
-                    y={shape.y}
-                    radius={30}
-                    fill="green"
-                  />
-                )
-            )}
-          </Layer>
-        </Stage>
+        <Canvas shapes={shapes} tool={tool} onCanvasClick={handleCanvasClick} />
       </div>
     </div>
   );
